@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Sistema Escolar</title>
+<style>
+body {
+    font-family: Arial, sans-serif;
+    background: linear-gradient(120deg,#4e54c8,#8f94fb);
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    height:100vh;
+    margin:0;
+}
+.card {
+    background:white;
+    padding:30px;
+    border-radius:12px;
+    box-shadow:0 0 15px rgba(0,0,0,0.3);
+    text-align:center;
+    width:350px;
+}
+input, select, button {
+    width:90%;
+    padding:10px;
+    margin:8px;
+    font-size:16px;
+}
+button {
+    background:#4e54c8;
+    color:white;
+    border:none;
+    cursor:pointer;
+    border-radius:6px;
+}
+.hidden { display:none; }
+#resposta { font-weight:bold; }
+</style>
+</head>
+<body>
+
+<!-- ===== TELA LOGIN (essa é a tela que deve abrir primeiro) ===== -->
+<div class="card" id="telaLogin">
+    <h2>Sistema Escolar</h2>
+
+    <select id="tipo">
+        <option value="professor">Professor</option>
+        <option value="aluno">Aluno</option>
+    </select>
+
+    <input id="login" type="text" placeholder="Digite ID ou Matrícula">
+
+    <button onclick="entrar()">Entrar</button>
+
+    <p id="resposta"></p>
+</div>
+
+<!-- ===== TELA PROFESSOR ===== -->
+<div class="card hidden" id="telaProfessor">
+    <h2>Painel do Professor</h2>
+
+    <input id="matAluno" placeholder="Matrícula do aluno">
+    <input id="nota" placeholder="Nota">
+
+    <button onclick="lancarNota()">Lançar Nota</button>
+
+    <p id="respostaProfessor"></p>
+
+    <button onclick="logout()">Logout</button>
+</div>
+
+<!-- ===== TELA ALUNO ===== -->
+<div class="card hidden" id="telaAluno">
+    <h2>Painel do Aluno</h2>
+
+    <button onclick="verMedia()">Ver Média</button>
+
+    <p id="respostaAluno"></p>
+
+    <button onclick="logout()">Logout</button>
+</div>
+
+<script>
+// usuários cadastrados
+let professores = ["P1","P2"];
+let alunos = ["A1"];
+
+// notas simuladas
+let notaAluno = null;
+
+function entrar(){
+    let tipo = document.getElementById("tipo").value;
+    let login = document.getElementById("login").value.trim();
+    let resp = document.getElementById("resposta");
+
+    if(tipo === "professor" && professores.includes(login)){
+        abrirTela("telaProfessor");
+        return;
+    }
+
+    if(tipo === "aluno" && alunos.includes(login)){
+        abrirTela("telaAluno");
+        return;
+    }
+
+    resp.style.color = "red";
+    resp.innerText = "Usuário não encontrado ❌";
+}
+
+function abrirTela(id){
+    document.getElementById("telaLogin").classList.add("hidden");
+    document.getElementById("telaProfessor").classList.add("hidden");
+    document.getElementById("telaAluno").classList.add("hidden");
+    document.getElementById(id).classList.remove("hidden");
+}
+
+function logout(){
+    abrirTela("telaLogin");
+    document.getElementById("resposta").innerText = "";
+    document.getElementById("login").value = "";
+}
+
+function lancarNota(){
+    let mat = document.getElementById("matAluno").value.trim();
+    let nota = document.getElementById("nota").value.trim();
+    let resp = document.getElementById("respostaProfessor");
+
+    if(!alunos.includes(mat)){
+        resp.style.color = "red";
+        resp.innerText = "Aluno não encontrado ❌";
+        return;
+    }
+
+    notaAluno = parseFloat(nota);
+    resp.style.color = "green";
+    resp.innerText = "Nota lançada ✅";
+}
+
+function verMedia(){
+    let resp = document.getElementById("respostaAluno");
+
+    if(notaAluno == null){
+        resp.style.color = "red";
+        resp.innerText = "Nenhuma nota lançada ❌";
+        return;
+    }
+
+    resp.style.color = "blue";
+    resp.innerText = "Sua média: " + notaAluno;
+}
+</script>
+
+</body>
+</html>
